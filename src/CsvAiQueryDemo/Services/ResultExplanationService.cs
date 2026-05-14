@@ -57,14 +57,25 @@ public sealed class ResultExplanationService
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(JsonSerializer.Serialize(payload, JsonOptions()), Encoding.UTF8, "application/json");
 
-        using var response = await _httpClient.SendAsync(request, cancellationToken);
-        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-        if (!response.IsSuccessStatusCode)
+        try
+        {
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
+            var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                return CreateLocalExplanation(queryResult);
+            }
+
+            return ExtractOutputText(responseBody);
+        }
+        catch (HttpRequestException)
         {
             return CreateLocalExplanation(queryResult);
         }
-
-        return ExtractOutputText(responseBody);
+        catch (TaskCanceledException)
+        {
+            return CreateLocalExplanation(queryResult);
+        }
     }
 
     public string BuildUserPrompt(string userQuestion, QueryResult queryResult)

@@ -30,8 +30,8 @@ File.WriteAllText(
     JsonSerializer.Serialize(datasetProfile, jsonOptions));
 
 var queryEngine = new QueryEngine(rows);
-var queryIntentService = new QueryIntentService(new HttpClient(), promptPath);
-var resultExplanationService = new ResultExplanationService(new HttpClient(), explanationPromptPath);
+var queryIntentService = new QueryIntentService(OpenAiHttpClientFactory.Create(), promptPath);
+var resultExplanationService = new ResultExplanationService(OpenAiHttpClientFactory.Create(), explanationPromptPath);
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -60,7 +60,7 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
         var answer = await resultExplanationService.ExplainAsync(request.Message, queryResult, cancellationToken);
         if (generation.UsedFallback)
         {
-            answer = $"{answer} Hinweis: OpenAI ist nicht konfiguriert; diese Demo-Frage wurde per lokalem Fallback in ein QueryIntent übersetzt.";
+            answer = $"{answer} Hinweis: {generation.Message}";
         }
 
         PipelineSteps.MarkSuccess(steps, "Ergebnis zurückgegeben", "The deterministic query result was returned to the frontend.");
