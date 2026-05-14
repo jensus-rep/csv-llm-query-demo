@@ -6,6 +6,10 @@
 # dotenv files
 .env
 
+# Local settings and secrets
+src/CsvAiQueryDemo/appsettings.json
+src/CsvAiQueryDemo/appsettings.Development.json
+
 # User-specific files
 *.rsuser
 *.suo

@@ -67,7 +67,42 @@
 
 ## Phase 3: GPT query intent integration
 
-Pending.
+### Plan
+- Add prompt files for QueryIntent generation and result explanation.
+- Add OpenAI integration for QueryIntent generation using only DatasetProfile, user question and schema.
+- Add optional natural language result explanation using only user question and QueryResult.
+- Add local fallback for supported demo questions when `OPENAI_API_KEY` is not configured.
+- Persist generated QueryIntent as JSON.
+- Add tests proving that QueryIntent prompts do not include full CSV rows.
+
+### Acceptance Criteria
+- GPT gets only DatasetProfile, user question and QueryIntent schema.
+- GPT never gets the full CSV.
+- QueryIntent is generated as JSON.
+- `output/query-intent.json` is written.
+- Result explanation works optionally.
+- Missing API key errors are understandable.
+- This task plan is updated.
+
+### Implementation Notes
+- Added `Prompts/query-intent-system-prompt.txt` with explicit instructions that the model receives no full CSV and must return JSON only.
+- Added `Prompts/result-explanation-system-prompt.txt` for short factual answers based only on `QueryResult`.
+- Implemented `QueryIntentService` using the OpenAI Responses API and JSON schema output.
+- `QueryIntentService.BuildUserPrompt` includes only DatasetProfile JSON, the user question and the allowed QueryIntent schema.
+- Implemented local fallback intents for the demo questions when `OPENAI_API_KEY` is missing.
+- Implemented `ResultExplanationService` with optional OpenAI use and local fallback explanation.
+- Added `appsettings.example.json` and removed committed local `appsettings.json` files.
+- Added `output/query-intent.json` as an example output.
+
+### Test Evidence
+- `dotnet build` succeeded with 0 warnings and 0 errors.
+- `dotnet test` succeeded: 13 tests passed.
+- Added test verifying that the QueryIntent prompt does not include full CSV row strings.
+
+### GPT Data Boundary Review
+- Verified by code review and test: `QueryIntentService` receives `DatasetProfile`, user question and schema only.
+- No service passes the in-memory row collection to OpenAI.
+- No full CSV rows are written into prompt files.
 
 ## Phase 4: Minimal API and frontend
 

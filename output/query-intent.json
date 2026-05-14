@@ -1,0 +1,8 @@
+{
+  "Operation": "count",
+  "Column": "Vorname",
+  "Operator": "equals",
+  "Value": "Max",
+  "GroupBy": null,
+  "Limit": null
+}
