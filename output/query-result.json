@@ -1,8 +1,8 @@
 {
   "Operation": "count",
   "Success": true,
-  "Result": 4,
+  "Result": 26,
   "Rows": [],
-  "Message": "Counted 4 matching rows.",
+  "Message": "Counted 26 matching rows.",
   "Source": "CSharpQueryEngine"
 }

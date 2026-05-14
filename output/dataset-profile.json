@@ -1,87 +1,87 @@
 {
   "DatasetId": "demo-contacts",
   "FileName": "demodaten.csv",
-  "RowCount": 12,
+  "RowCount": 2000,
   "ColumnCount": 4,
   "Delimiter": ";",
   "Columns": [
     {
       "Name": "Rufnummer",
-      "InferredType": "integer",
+      "InferredType": "string",
       "EmptyCount": 0,
-      "NonEmptyCount": 12,
-      "UniqueCount": 12,
+      "NonEmptyCount": 2000,
+      "UniqueCount": 2000,
       "ExampleValues": [
-        "1001",
-        "1002",
-        "1003"
+        "\u002B49 133 1884925",
+        "\u002B49 459 8169266",
+        "\u002B49 993 4197419"
       ],
       "TopValues": {
-        "1001": 1,
-        "1002": 1,
-        "1003": 1,
-        "1004": 1,
-        "1005": 1
+        "\u002B49 100 2736934": 1,
+        "\u002B49 100 2760165": 1,
+        "\u002B49 100 5193212": 1,
+        "\u002B49 100 5667036": 1,
+        "\u002B49 101 6342428": 1
       }
     },
     {
       "Name": "Vorname",
       "InferredType": "string",
       "EmptyCount": 0,
-      "NonEmptyCount": 12,
-      "UniqueCount": 7,
+      "NonEmptyCount": 2000,
+      "UniqueCount": 50,
       "ExampleValues": [
-        "Max",
-        "Anna",
-        "Laura"
+        "Anja",
+        "Werner",
+        "Klaus"
       ],
       "TopValues": {
-        "Max": 4,
-        "Anna": 2,
-        "Laura": 2,
-        "Ben": 1,
-        "Mia": 1
+        "Michael": 48,
+        "Eva": 47,
+        "Klaus": 47,
+        "Paul": 47,
+        "Katrin": 46
       }
     },
     {
       "Name": "Nachname",
       "InferredType": "string",
       "EmptyCount": 0,
-      "NonEmptyCount": 12,
-      "UniqueCount": 11,
+      "NonEmptyCount": 2000,
+      "UniqueCount": 49,
       "ExampleValues": [
-        "M\u00FCller",
-        "Schmidt",
-        "Schneider"
+        "Koch",
+        "Fischer",
+        "Schubert"
       ],
       "TopValues": {
-        "M\u00FCller": 2,
-        "Becker": 1,
-        "Fischer": 1,
-        "Hoffmann": 1,
-        "Koch": 1
+        "M\uFFFDller": 89,
+        "Weber": 58,
+        "Hahn": 52,
+        "Schubert": 51,
+        "Zimmermann": 51
       }
     },
     {
       "Name": "Mail",
       "InferredType": "email",
       "EmptyCount": 0,
-      "NonEmptyCount": 12,
-      "UniqueCount": 12,
+      "NonEmptyCount": 2000,
+      "UniqueCount": 2000,
       "ExampleValues": [
-        "max.mueller@example.com",
-        "anna.schmidt@example.com",
-        "max.schneider@example.org"
+        "anja.koch1@example.com",
+        "werner.fischer2@demo.de",
+        "klaus.schubert3@test.org"
       ],
       "TopValues": {
-        "anna.schmidt@example.com": 1,
-        "anna.wagner@demo.local": 1,
-        "ben.becker@example.org": 1,
-        "laura.koch@demo.local": 1,
-        "laura.mueller@example.com": 1
+        "anja.bauer1346@demo.de": 1,
+        "anja.bauer601@example.com": 1,
+        "anja.becker1546@demo.de": 1,
+        "anja.becker640@testMail.org": 1,
+        "anja.braun1421@probe.net": 1
       }
     }
   ],
   "DataRef": "local-memory:demodaten.csv",
-  "CreatedAtUtc": "2026-05-14T13:56:05.8527318+00:00"
+  "CreatedAtUtc": "2026-05-14T15:06:09.3927047+00:00"
 }
