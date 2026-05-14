@@ -1,6 +1,6 @@
 # Best Practice Explanation
 
-An LLM should not be used as a database or calculator. Counting, filtering, grouping and aggregation are deterministic tasks. They belong in code where the behavior is repeatable, testable and auditable.
+An LLM should not be used as a database or calculator. Counting, filtering, grouping and aggregation are deterministic tasks. They belong in code where behavior is repeatable, testable and auditable.
 
 Sending a full CSV to an LLM creates avoidable problems:
 
@@ -8,9 +8,40 @@ Sending a full CSV to an LLM creates avoidable problems:
 - Large files can exceed context limits or become expensive.
 - Sensitive data may be exposed unnecessarily.
 - The result is harder to verify than a deterministic query.
+- Small prompt or model changes can change answers that should be exact.
 
-This demo sends only a `DatasetProfile` to the LLM. The profile contains metadata and profiling information: columns, inferred types, row count, examples and top values. It is enough context for translating a question into a structured `QueryIntent`, but it is not the dataset itself.
+This demo uses the LLM only for interpretation. It maps a question such as "Wie oft kommt der Vorname Max vor?" to a structured JSON intent, for example `count` on column `Vorname` with operator `equals` and value `Max`.
 
-The useful role for the LLM is interpretation. It maps a natural language question such as "Wie oft kommt der Vorname Max vor?" to a JSON intent such as `count` on column `Vorname` with operator `equals` and value `Max`.
+The actual answer is produced by `QueryEngine` in C#. That keeps the calculation deterministic and ensures the full CSV is not sent to the LLM.
 
-The actual answer is produced by C# in `QueryEngine`. That keeps the calculation deterministic and ensures the full CSV is not sent to the LLM.
+## What Is Sent To The LLM
+
+For query intent generation, the model receives:
+
+- the user question
+- a compact `DatasetProfile`
+- the allowed `QueryIntent` schema
+
+The `DatasetProfile` contains metadata and profiling information such as columns, inferred types, row count, examples and top values. It is enough context for translating a question into a structured query, but it is not the dataset itself.
+
+For result explanation, the model receives only a safe `QueryResult` summary:
+
+- operation
+- success flag
+- scalar result
+- row count
+- message
+- source
+
+Returned result rows are not sent back to the LLM for explanation.
+
+## Why This Split Matters
+
+The LLM handles language ambiguity. The application handles data correctness.
+
+That split keeps the system easier to test:
+
+- Prompt tests can verify that full CSV rows are not included.
+- Unit tests can verify every supported query operation.
+- API smoke tests can verify the end-to-end pipeline.
+- Generated JSON files in `output/` make the intermediate state inspectable.
