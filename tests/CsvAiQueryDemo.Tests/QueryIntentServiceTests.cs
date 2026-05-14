@@ -56,7 +56,9 @@ public sealed class QueryIntentServiceTests
     public async Task CreateIntentAsync_UsesUnderstandableFallbackWhenApiKeyIsMissing()
     {
         var originalApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        var originalFallback = Environment.GetEnvironmentVariable("OPENAI_ENABLE_FALLBACK");
         Environment.SetEnvironmentVariable("OPENAI_API_KEY", null);
+        Environment.SetEnvironmentVariable("OPENAI_ENABLE_FALLBACK", "true");
 
         try
         {
@@ -73,6 +75,7 @@ public sealed class QueryIntentServiceTests
         finally
         {
             Environment.SetEnvironmentVariable("OPENAI_API_KEY", originalApiKey);
+            Environment.SetEnvironmentVariable("OPENAI_ENABLE_FALLBACK", originalFallback);
         }
     }
 

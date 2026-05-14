@@ -8,10 +8,12 @@ namespace CsvAiQueryDemo.Services;
 public sealed class ResultExplanationService
 {
     private const string DefaultModel = "gpt-5.2";
+    private const string DefaultResponsesEndpoint = "https://api.openai.com/v1/responses";
     private readonly HttpClient _httpClient;
     private readonly string _systemPrompt;
     private readonly string? _apiKey;
     private readonly string _model;
+    private readonly string _responsesEndpoint;
 
     public ResultExplanationService(HttpClient httpClient, string promptPath)
     {
@@ -19,6 +21,7 @@ public sealed class ResultExplanationService
         _systemPrompt = File.ReadAllText(promptPath);
         _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         _model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? DefaultModel;
+        _responsesEndpoint = Environment.GetEnvironmentVariable("OPENAI_RESPONSES_ENDPOINT") ?? DefaultResponsesEndpoint;
     }
 
     public async Task<string> ExplainAsync(string userQuestion, QueryResult queryResult, CancellationToken cancellationToken = default)
@@ -53,7 +56,7 @@ public sealed class ResultExplanationService
             }
         };
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/responses");
+        using var request = new HttpRequestMessage(HttpMethod.Post, _responsesEndpoint);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(JsonSerializer.Serialize(payload, JsonOptions()), Encoding.UTF8, "application/json");
 

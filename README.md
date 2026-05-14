@@ -34,10 +34,15 @@ Then edit `.env`:
 
 ```env
 OPENAI_API_KEY=your-api-key
-OPENAI_MODEL=gpt-5.4
+OPENAI_MODEL=gpt-5.1
+OPENAI_RESPONSES_ENDPOINT=https://api.openai.com/v1/responses
+OPENAI_USE_PROXY=false
+OPENAI_ENABLE_FALLBACK=false
 ```
 
-Without `OPENAI_API_KEY`, the app uses a clearly marked local fallback for the included demo questions. `.env` is ignored by Git; `.env.example` is safe to commit.
+`.env` is ignored by Git; `.env.example` is safe to commit.
+
+Set `OPENAI_ENABLE_FALLBACK=true` only when you explicitly want the local demo fallback for example questions. Keep it `false` when you want to test the real OpenAI integration.
 
 ## Run
 

@@ -8,10 +8,13 @@ namespace CsvAiQueryDemo.Services;
 public sealed class QueryIntentService
 {
     private const string DefaultModel = "gpt-5.2";
+    private const string DefaultResponsesEndpoint = "https://api.openai.com/v1/responses";
     private readonly HttpClient _httpClient;
     private readonly string _systemPrompt;
     private readonly string? _apiKey;
     private readonly string _model;
+    private readonly string _responsesEndpoint;
+    private readonly bool _fallbackEnabled;
 
     public QueryIntentService(HttpClient httpClient, string promptPath)
     {
@@ -19,6 +22,11 @@ public sealed class QueryIntentService
         _systemPrompt = File.ReadAllText(promptPath);
         _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         _model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? DefaultModel;
+        _responsesEndpoint = Environment.GetEnvironmentVariable("OPENAI_RESPONSES_ENDPOINT") ?? DefaultResponsesEndpoint;
+        _fallbackEnabled = string.Equals(
+            Environment.GetEnvironmentVariable("OPENAI_ENABLE_FALLBACK"),
+            "true",
+            StringComparison.OrdinalIgnoreCase);
     }
 
     public async Task<QueryIntentGeneration> CreateIntentAsync(
@@ -28,14 +36,18 @@ public sealed class QueryIntentService
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return new QueryIntentGeneration(
-                CreateFallbackIntent(userQuestion),
-                UsedFallback: true,
-                Message: "OpenAI API key is not configured. Used a local demo fallback for supported example questions.");
+            if (_fallbackEnabled)
+            {
+                return CreateFallbackGeneration(
+                    userQuestion,
+                    "OpenAI API key is not configured");
+            }
+
+            throw new InvalidOperationException("OpenAI API key is not configured. Set OPENAI_API_KEY in .env or enable OPENAI_ENABLE_FALLBACK=true for demo fallback mode.");
         }
 
         var payload = BuildRequestPayload(userQuestion, datasetProfile);
-        using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/responses");
+        using var request = new HttpRequestMessage(HttpMethod.Post, _responsesEndpoint);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
         request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
@@ -45,6 +57,11 @@ public sealed class QueryIntentService
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
+                if (!_fallbackEnabled)
+                {
+                    throw new InvalidOperationException($"OpenAI query intent request failed: {(int)response.StatusCode} {response.ReasonPhrase}. Endpoint: {_responsesEndpoint}");
+                }
+
                 return CreateFallbackGeneration(
                     userQuestion,
                     $"OpenAI query intent request failed: {(int)response.StatusCode} {response.ReasonPhrase}");
@@ -58,10 +75,20 @@ public sealed class QueryIntentService
         }
         catch (HttpRequestException ex)
         {
+            if (!_fallbackEnabled)
+            {
+                throw new InvalidOperationException($"OpenAI connection failed for endpoint {_responsesEndpoint}: {ex.Message}", ex);
+            }
+
             return CreateFallbackGeneration(userQuestion, $"OpenAI connection failed: {ex.Message}");
         }
         catch (TaskCanceledException ex)
         {
+            if (!_fallbackEnabled)
+            {
+                throw new InvalidOperationException($"OpenAI request timed out for endpoint {_responsesEndpoint}: {ex.Message}", ex);
+            }
+
             return CreateFallbackGeneration(userQuestion, $"OpenAI request timed out: {ex.Message}");
         }
     }
