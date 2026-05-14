@@ -1,0 +1,87 @@
+{
+  "DatasetId": "demo-contacts",
+  "FileName": "demodaten.csv",
+  "RowCount": 12,
+  "ColumnCount": 4,
+  "Delimiter": ";",
+  "Columns": [
+    {
+      "Name": "Rufnummer",
+      "InferredType": "integer",
+      "EmptyCount": 0,
+      "NonEmptyCount": 12,
+      "UniqueCount": 12,
+      "ExampleValues": [
+        "1001",
+        "1002",
+        "1003"
+      ],
+      "TopValues": {
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 1,
+        "1005": 1
+      }
+    },
+    {
+      "Name": "Vorname",
+      "InferredType": "string",
+      "EmptyCount": 0,
+      "NonEmptyCount": 12,
+      "UniqueCount": 7,
+      "ExampleValues": [
+        "Max",
+        "Anna",
+        "Laura"
+      ],
+      "TopValues": {
+        "Max": 4,
+        "Anna": 2,
+        "Laura": 2,
+        "Ben": 1,
+        "Mia": 1
+      }
+    },
+    {
+      "Name": "Nachname",
+      "InferredType": "string",
+      "EmptyCount": 0,
+      "NonEmptyCount": 12,
+      "UniqueCount": 11,
+      "ExampleValues": [
+        "M\u00FCller",
+        "Schmidt",
+        "Schneider"
+      ],
+      "TopValues": {
+        "M\u00FCller": 2,
+        "Becker": 1,
+        "Fischer": 1,
+        "Hoffmann": 1,
+        "Koch": 1
+      }
+    },
+    {
+      "Name": "Mail",
+      "InferredType": "email",
+      "EmptyCount": 0,
+      "NonEmptyCount": 12,
+      "UniqueCount": 12,
+      "ExampleValues": [
+        "max.mueller@example.com",
+        "anna.schmidt@example.com",
+        "max.schneider@example.org"
+      ],
+      "TopValues": {
+        "anna.schmidt@example.com": 1,
+        "anna.wagner@demo.local": 1,
+        "ben.becker@example.org": 1,
+        "laura.koch@demo.local": 1,
+        "laura.mueller@example.com": 1
+      }
+    }
+  ],
+  "DataRef": "local-memory:demodaten.csv",
+  "CreatedAtUtc": "2026-05-14T13:29:38.3962911+00:00"
+}
