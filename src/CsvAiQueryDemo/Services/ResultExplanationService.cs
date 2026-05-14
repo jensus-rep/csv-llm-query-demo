@@ -17,17 +17,17 @@ public sealed class ResultExplanationService
         _providerOptions = OpenAiProviderOptions.FromEnvironment();
     }
 
-    public async Task<string> ExplainAsync(string userQuestion, QueryResult queryResult, CancellationToken cancellationToken = default)
+    public async Task<ResultExplanationGeneration> ExplainAsync(string userQuestion, QueryResult queryResult, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(_providerOptions.ApiKey))
         {
-            return CreateLocalExplanation(queryResult);
+            return CreateLocalGeneration(queryResult);
         }
 
         if (_providerOptions.Provider == OpenAiProvider.AzureChatCompletions
             && string.IsNullOrWhiteSpace(_providerOptions.RequestUri))
         {
-            return CreateLocalExplanation(queryResult);
+            return CreateLocalGeneration(queryResult);
         }
 
         var payload = BuildRequestPayload(userQuestion, queryResult);
@@ -41,18 +41,18 @@ public sealed class ResultExplanationService
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                return CreateLocalExplanation(queryResult);
+                return CreateLocalGeneration(queryResult);
             }
 
-            return ExtractOutputText(responseBody);
+            return new ResultExplanationGeneration(ExtractOutputText(responseBody), ExtractUsage(responseBody));
         }
         catch (HttpRequestException)
         {
-            return CreateLocalExplanation(queryResult);
+            return CreateLocalGeneration(queryResult);
         }
         catch (TaskCanceledException)
         {
-            return CreateLocalExplanation(queryResult);
+            return CreateLocalGeneration(queryResult);
         }
     }
 
@@ -135,6 +135,11 @@ public sealed class ResultExplanationService
         };
     }
 
+    private static ResultExplanationGeneration CreateLocalGeneration(QueryResult queryResult)
+    {
+        return new ResultExplanationGeneration(CreateLocalExplanation(queryResult), TokenUsage.Zero);
+    }
+
     private static string ExtractOutputText(string responseBody)
     {
         using var document = JsonDocument.Parse(responseBody);
@@ -175,6 +180,35 @@ public sealed class ResultExplanationService
         }
 
         return string.Empty;
+    }
+
+    private static TokenUsage ExtractUsage(string responseBody)
+    {
+        using var document = JsonDocument.Parse(responseBody);
+        if (!document.RootElement.TryGetProperty("usage", out var usage))
+        {
+            return TokenUsage.Zero;
+        }
+
+        var inputTokens = GetIntProperty(usage, "input_tokens")
+            ?? GetIntProperty(usage, "prompt_tokens")
+            ?? 0;
+        var outputTokens = GetIntProperty(usage, "output_tokens")
+            ?? GetIntProperty(usage, "completion_tokens")
+            ?? 0;
+        var totalTokens = GetIntProperty(usage, "total_tokens") ?? inputTokens + outputTokens;
+
+        return new TokenUsage(inputTokens, outputTokens, totalTokens);
+    }
+
+    private static int? GetIntProperty(JsonElement element, string propertyName)
+    {
+        if (element.TryGetProperty(propertyName, out var value) && value.TryGetInt32(out var result))
+        {
+            return result;
+        }
+
+        return null;
     }
 
     private static JsonSerializerOptions JsonOptions()

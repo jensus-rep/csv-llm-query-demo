@@ -6,4 +6,5 @@ public sealed record ChatResponse(
     QueryResult QueryResult,
     IReadOnlyList<PipelineStep> PipelineSteps,
     DatasetProfile DatasetProfile,
-    ModelPromptInfo? QueryIntentPrompt);
+    ModelPromptInfo? QueryIntentPrompt,
+    TokenUsage TokenUsage);

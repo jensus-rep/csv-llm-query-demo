@@ -24,6 +24,7 @@ initialize();
 
 async function initialize() {
     renderPipeline(pipelineDefaults);
+    renderTokenUsage();
     renderExamples();
     await loadDatasetProfile();
 }
@@ -103,6 +104,7 @@ form.addEventListener("submit", async event => {
         renderPipeline(payload.pipelineSteps ?? pipelineDefaults);
         renderDatasetProfileJson(payload.datasetProfile);
         renderPrompt(payload.queryIntentPrompt);
+        renderTokenUsage(payload.tokenUsage);
         document.querySelector("#query-intent-json").textContent = JSON.stringify(payload.queryIntent ?? {}, null, 2);
         document.querySelector("#query-result-json").textContent = JSON.stringify(payload.queryResult ?? {}, null, 2);
     } catch {
@@ -124,12 +126,31 @@ function renderDatasetProfileJson(profile) {
 }
 
 function renderPrompt(prompt) {
-    document.querySelector("#query-prompt-provider").textContent = prompt?.provider
-        ? `Provider: ${prompt.provider}`
+    const provider = getProperty(prompt, "provider");
+    const systemPrompt = getProperty(prompt, "systemPrompt");
+    const userPrompt = getProperty(prompt, "userPrompt");
+    const requestPayload = getProperty(prompt, "requestPayload");
+
+    document.querySelector("#query-prompt-provider").textContent = provider
+        ? `Provider: ${provider}`
         : "Noch keine Anfrage gesendet.";
-    document.querySelector("#query-system-prompt").textContent = prompt?.systemPrompt ?? "Noch keine Anfrage gesendet.";
-    document.querySelector("#query-user-prompt").textContent = prompt?.userPrompt ?? "Noch keine Anfrage gesendet.";
-    document.querySelector("#query-request-payload").textContent = formatJsonText(prompt?.requestPayload);
+    document.querySelector("#query-system-prompt").textContent = systemPrompt ?? "Noch keine Anfrage gesendet.";
+    document.querySelector("#query-user-prompt").textContent = userPrompt ?? "Noch keine Anfrage gesendet.";
+    document.querySelector("#query-request-payload").textContent = formatJsonText(requestPayload);
+}
+
+function renderTokenUsage(usage = {}) {
+    const inputTokens = getProperty(usage, "inputTokens") ?? 0;
+    const outputTokens = getProperty(usage, "outputTokens") ?? 0;
+    const totalTokens = getProperty(usage, "totalTokens") ?? inputTokens + outputTokens;
+
+    document.querySelector("#token-input").textContent = formatNumber(inputTokens);
+    document.querySelector("#token-output").textContent = formatNumber(outputTokens);
+    document.querySelector("#token-total").textContent = formatNumber(totalTokens);
+}
+
+function formatNumber(value) {
+    return new Intl.NumberFormat("de-DE").format(Number(value) || 0);
 }
 
 function formatJsonText(value) {
@@ -137,11 +158,24 @@ function formatJsonText(value) {
         return "Noch keine Anfrage gesendet.";
     }
 
+    if (typeof value !== "string") {
+        return JSON.stringify(value, null, 2);
+    }
+
     try {
         return JSON.stringify(JSON.parse(value), null, 2);
     } catch {
         return value;
     }
+}
+
+function getProperty(value, camelCaseName) {
+    if (!value) {
+        return undefined;
+    }
+
+    const pascalCaseName = camelCaseName.charAt(0).toUpperCase() + camelCaseName.slice(1);
+    return value[camelCaseName] ?? value[pascalCaseName];
 }
 
 function renderPipeline(steps) {

@@ -58,14 +58,16 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
         QueryEngine.SaveResult(queryResult, Path.Combine(outputPath, "query-result.json"));
         PipelineSteps.MarkSuccess(steps, "QueryEngine in C# ausgeführt", queryResult.Message);
 
-        var answer = await resultExplanationService.ExplainAsync(request.Message, queryResult, cancellationToken);
+        var explanation = await resultExplanationService.ExplainAsync(request.Message, queryResult, cancellationToken);
+        var answer = explanation.Answer;
         if (generation.UsedFallback)
         {
             answer = $"{answer} Hinweis: {generation.Message}";
         }
 
         PipelineSteps.MarkSuccess(steps, "Ergebnis zurückgegeben", "The deterministic query result was returned to the frontend.");
-        return Results.Ok(new ChatResponse(answer, generation.Intent, queryResult, steps, datasetProfile, promptInfo));
+        var tokenUsage = generation.Usage.Add(explanation.Usage);
+        return Results.Ok(new ChatResponse(answer, generation.Intent, queryResult, steps, datasetProfile, promptInfo, tokenUsage));
     }
     catch (Exception ex)
     {
@@ -81,7 +83,7 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
             Source = "CsvAiQueryDemo"
         };
 
-        return Results.BadRequest(new ChatResponse(ex.Message, null, errorResult, steps, datasetProfile, promptInfo));
+        return Results.BadRequest(new ChatResponse(ex.Message, null, errorResult, steps, datasetProfile, promptInfo, TokenUsage.Zero));
     }
 });
 
