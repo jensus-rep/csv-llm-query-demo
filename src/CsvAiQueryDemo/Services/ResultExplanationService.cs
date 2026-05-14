@@ -48,7 +48,7 @@ public sealed class ResultExplanationService
                         new
                         {
                             type = "input_text",
-                            text = $"User question:\n{userQuestion}\n\nQueryResult JSON:\n{JsonSerializer.Serialize(queryResult, JsonOptions())}"
+                            text = BuildUserPrompt(userQuestion, queryResult)
                         }
                     }
                 }
@@ -67,6 +67,21 @@ public sealed class ResultExplanationService
         }
 
         return ExtractOutputText(responseBody);
+    }
+
+    public string BuildUserPrompt(string userQuestion, QueryResult queryResult)
+    {
+        var safeResult = new
+        {
+            queryResult.Operation,
+            queryResult.Success,
+            queryResult.Result,
+            RowCount = queryResult.Rows.Count,
+            queryResult.Message,
+            queryResult.Source
+        };
+
+        return $"User question:\n{userQuestion}\n\nQueryResult JSON:\n{JsonSerializer.Serialize(safeResult, JsonOptions())}";
     }
 
     private static string CreateLocalExplanation(QueryResult queryResult)

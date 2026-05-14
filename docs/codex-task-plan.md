@@ -106,4 +106,47 @@
 
 ## Phase 4: Minimal API and frontend
 
-Pending.
+### Plan
+- Add Minimal API endpoints.
+- Add static frontend in `wwwroot`.
+- Display DatasetProfile, pipeline steps, chat, examples and technical JSON details.
+- Add documentation files and update README.
+- Run final build, tests and data-boundary review.
+
+### Acceptance Criteria
+- `GET /api/dataset/profile` works.
+- `POST /api/chat` works.
+- Frontend loads DatasetProfile.
+- Chat works.
+- Pipeline steps are displayed.
+- QueryIntent and QueryResult are visible in the frontend.
+- Notice is visible: the full CSV was not sent to the LLM.
+- `dotnet build` and `dotnet test` succeed.
+- This task plan is updated.
+
+### Implementation Notes
+- Added Minimal API endpoints:
+  - `GET /api/dataset/profile`
+  - `POST /api/chat`
+  - `GET /api/output/query-intent`
+  - `GET /api/output/query-result`
+- Added static frontend in `wwwroot` with dataset panel, pipeline panel, chat panel, examples and technical details.
+- Added visible frontend notice that the full CSV was not sent to the LLM.
+- Added `ChatRequest`, `ChatResponse` and `PipelineStep` models.
+- Added `PipelineSteps` helper for transparent step status output.
+- Updated `ResultExplanationService` so optional LLM explanation receives a safe QueryResult summary with row count, not full result rows.
+- Added architecture and best practice documentation.
+- Expanded README with goal, setup, environment variables, pipeline and example questions.
+
+### Test Evidence
+- `dotnet build` succeeded with 0 warnings and 0 errors.
+- `dotnet test` succeeded: 14 tests passed.
+- Local API smoke test on `http://localhost:5086`:
+  - `GET /api/dataset/profile` returned 12 rows and 4 columns.
+  - `POST /api/chat` for "Wie oft kommt der Vorname Max vor?" returned a fallback QueryIntent `count` on `Vorname` and deterministic result `4`.
+
+### GPT Data Boundary Review
+- `QueryIntentService` sends only DatasetProfile, user question and QueryIntent schema.
+- `QueryEngine` receives the in-memory rows and executes deterministically in C#.
+- `ResultExplanationService` sends only a safe summary of QueryResult and row count, not full rows.
+- Frontend displays QueryResult rows to the user when relevant, but those rows are not sent to the LLM.

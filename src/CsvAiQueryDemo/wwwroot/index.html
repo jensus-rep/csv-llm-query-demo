@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSV AI Query Demo</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header class="app-header">
+        <div>
+            <h1>CSV AI Query Demo</h1>
+            <p>LLM als Query Interpreter, C# als deterministische Query Engine</p>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="card dataset-card">
+            <div class="section-title">
+                <h2>Dataset</h2>
+                <span id="dataset-status">loading</span>
+            </div>
+            <div id="dataset-summary" class="dataset-summary"></div>
+            <div id="columns" class="columns"></div>
+        </section>
+
+        <section class="card pipeline-card">
+            <div class="section-title">
+                <h2>Pipeline</h2>
+            </div>
+            <ol id="pipeline" class="pipeline"></ol>
+        </section>
+
+        <section class="card chat-card">
+            <div class="section-title">
+                <h2>Chat</h2>
+            </div>
+            <div id="messages" class="messages"></div>
+            <div class="examples" id="examples"></div>
+            <form id="chat-form" class="chat-form">
+                <input id="message-input" name="message" autocomplete="off" placeholder="Frage zum CSV Datensatz">
+                <button type="submit">Senden</button>
+            </form>
+        </section>
+
+        <section class="card details-card">
+            <div class="section-title">
+                <h2>Technical Details</h2>
+            </div>
+            <p class="boundary">Die vollständige CSV wurde nicht an das LLM gesendet.</p>
+            <details open>
+                <summary>QueryIntent JSON</summary>
+                <pre id="query-intent-json">{}</pre>
+            </details>
+            <details>
+                <summary>QueryResult JSON</summary>
+                <pre id="query-result-json">{}</pre>
+            </details>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+</html>
