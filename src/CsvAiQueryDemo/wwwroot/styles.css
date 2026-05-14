@@ -20,6 +20,7 @@ body {
     font-family: Segoe UI, Roboto, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
+    min-width: 320px;
 }
 
 .app-header {
@@ -41,9 +42,11 @@ body {
 
 .layout {
     display: grid;
-    grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1.4fr);
+    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.4fr);
     gap: 18px;
     padding: 18px;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 .card {
@@ -81,7 +84,7 @@ body {
 
 .dataset-summary {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
     margin-bottom: 14px;
 }
@@ -108,6 +111,7 @@ body {
 .columns {
     display: grid;
     gap: 10px;
+    min-width: 0;
 }
 
 .column {
@@ -120,9 +124,13 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    min-width: 0;
 }
 
-.column-name { font-weight: 650; }
+.column-name {
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
 
 .tag {
     border-radius: 999px;
@@ -130,6 +138,7 @@ body {
     color: var(--accent-strong);
     padding: 3px 8px;
     font-size: 12px;
+    flex: 0 0 auto;
 }
 
 .top-values {
@@ -181,6 +190,7 @@ body {
 .messages {
     flex: 1;
     min-height: 260px;
+    max-height: 58vh;
     overflow: auto;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -225,6 +235,9 @@ button:hover { background: var(--accent-strong); }
 .examples button {
     background: #ffffff;
     color: var(--accent-strong);
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    text-align: left;
 }
 
 .chat-form {
@@ -245,6 +258,13 @@ input {
     margin: 0 0 12px;
     color: var(--accent-strong);
     font-weight: 650;
+}
+
+.token-usage {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
 details {
@@ -278,16 +298,57 @@ pre {
     padding: 12px;
     max-height: 360px;
     overflow: auto;
+    min-width: 0;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1120px) {
+    .layout {
+        grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
+    }
+}
+
+@media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
-    .chat-card { grid-row: auto; }
+    .chat-card {
+        grid-row: auto;
+        min-height: 460px;
+    }
+
+    .messages {
+        max-height: 46vh;
+    }
 }
 
 @media (max-width: 640px) {
     .app-header { padding: 22px 18px 16px; }
-    .layout { padding: 12px; }
-    .dataset-summary { grid-template-columns: 1fr; }
+    .app-header h1 { font-size: 26px; }
+    .layout {
+        gap: 12px;
+        padding: 12px;
+    }
+    .card { padding: 14px; }
+    .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .dataset-summary,
+    .token-usage { grid-template-columns: 1fr; }
+    .chat-card { min-height: 420px; }
     .chat-form { grid-template-columns: 1fr; }
+    .message {
+        max-width: 100%;
+    }
+    .examples {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    button {
+        width: 100%;
+    }
+    pre {
+        max-height: 260px;
+        padding: 10px;
+        font-size: 12px;
+    }
 }
