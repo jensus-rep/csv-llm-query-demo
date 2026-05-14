@@ -79,6 +79,79 @@ public sealed class QueryIntentServiceTests
         }
     }
 
+    [Fact]
+    public void BuildRequestPayload_UsesAzureChatCompletionsShapeWhenAzureEndpointIsConfigured()
+    {
+        var originalProvider = Environment.GetEnvironmentVariable("OPENAI_PROVIDER");
+        var originalAiProvider = Environment.GetEnvironmentVariable("AI_PROVIDER");
+        var originalEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+        var originalDeployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
+        Environment.SetEnvironmentVariable("OPENAI_PROVIDER", "azure");
+        Environment.SetEnvironmentVariable("AI_PROVIDER", null);
+        Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", "https://example-resource.cognitiveservices.azure.com/");
+        Environment.SetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT", "gpt-5.1");
+
+        try
+        {
+            var payload = CreateService().BuildRequestPayload(
+                "Wie viele Mail Adressen enthalten example.com?",
+                CreateMinimalProfile());
+
+            using var document = System.Text.Json.JsonDocument.Parse(payload);
+            Assert.True(document.RootElement.TryGetProperty("messages", out var messages));
+            Assert.Equal(2, messages.GetArrayLength());
+            Assert.True(document.RootElement.TryGetProperty("max_completion_tokens", out _));
+            Assert.True(document.RootElement.TryGetProperty("response_format", out var responseFormat));
+            Assert.Equal("json_schema", responseFormat.GetProperty("type").GetString());
+            Assert.False(document.RootElement.TryGetProperty("input", out _));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("OPENAI_PROVIDER", originalProvider);
+            Environment.SetEnvironmentVariable("AI_PROVIDER", originalAiProvider);
+            Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", originalEndpoint);
+            Environment.SetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT", originalDeployment);
+        }
+    }
+
+    [Fact]
+    public void BuildRequestPayload_AcceptsAiProviderAzureOpenAiAlias()
+    {
+        var originalProvider = Environment.GetEnvironmentVariable("OPENAI_PROVIDER");
+        var originalAiProvider = Environment.GetEnvironmentVariable("AI_PROVIDER");
+        var originalEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+        var originalDeployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
+        var originalOpenAiModel = Environment.GetEnvironmentVariable("OPENAI_MODEL");
+        var originalAiModel = Environment.GetEnvironmentVariable("AI_MODEL");
+        Environment.SetEnvironmentVariable("OPENAI_PROVIDER", null);
+        Environment.SetEnvironmentVariable("AI_PROVIDER", "azure_openai");
+        Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", "https://example-resource.cognitiveservices.azure.com/");
+        Environment.SetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT", null);
+        Environment.SetEnvironmentVariable("OPENAI_MODEL", null);
+        Environment.SetEnvironmentVariable("AI_MODEL", "gpt-5.1-deployment");
+
+        try
+        {
+            var payload = CreateService().BuildRequestPayload(
+                "Wie viele Mail Adressen enthalten example.com?",
+                CreateMinimalProfile());
+
+            using var document = System.Text.Json.JsonDocument.Parse(payload);
+            Assert.True(document.RootElement.TryGetProperty("messages", out _));
+            Assert.True(document.RootElement.TryGetProperty("max_completion_tokens", out _));
+            Assert.False(document.RootElement.TryGetProperty("input", out _));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("OPENAI_PROVIDER", originalProvider);
+            Environment.SetEnvironmentVariable("AI_PROVIDER", originalAiProvider);
+            Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", originalEndpoint);
+            Environment.SetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT", originalDeployment);
+            Environment.SetEnvironmentVariable("OPENAI_MODEL", originalOpenAiModel);
+            Environment.SetEnvironmentVariable("AI_MODEL", originalAiModel);
+        }
+    }
+
     private static QueryIntentService CreateService()
     {
         var promptPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.txt");

@@ -1,5 +1,4 @@
 using CsvAiQueryDemo.Models;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
@@ -7,58 +6,34 @@ namespace CsvAiQueryDemo.Services;
 
 public sealed class ResultExplanationService
 {
-    private const string DefaultModel = "gpt-5.2";
-    private const string DefaultResponsesEndpoint = "https://api.openai.com/v1/responses";
     private readonly HttpClient _httpClient;
     private readonly string _systemPrompt;
-    private readonly string? _apiKey;
-    private readonly string _model;
-    private readonly string _responsesEndpoint;
+    private readonly OpenAiProviderOptions _providerOptions;
 
     public ResultExplanationService(HttpClient httpClient, string promptPath)
     {
         _httpClient = httpClient;
         _systemPrompt = File.ReadAllText(promptPath);
-        _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-        _model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? DefaultModel;
-        _responsesEndpoint = Environment.GetEnvironmentVariable("OPENAI_RESPONSES_ENDPOINT") ?? DefaultResponsesEndpoint;
+        _providerOptions = OpenAiProviderOptions.FromEnvironment();
     }
 
     public async Task<string> ExplainAsync(string userQuestion, QueryResult queryResult, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(_apiKey))
+        if (string.IsNullOrWhiteSpace(_providerOptions.ApiKey))
         {
             return CreateLocalExplanation(queryResult);
         }
 
-        var payload = new
+        if (_providerOptions.Provider == OpenAiProvider.AzureChatCompletions
+            && string.IsNullOrWhiteSpace(_providerOptions.RequestUri))
         {
-            model = _model,
-            input = new object[]
-            {
-                new
-                {
-                    role = "system",
-                    content = new object[] { new { type = "input_text", text = _systemPrompt } }
-                },
-                new
-                {
-                    role = "user",
-                    content = new object[]
-                    {
-                        new
-                        {
-                            type = "input_text",
-                            text = BuildUserPrompt(userQuestion, queryResult)
-                        }
-                    }
-                }
-            }
-        };
+            return CreateLocalExplanation(queryResult);
+        }
 
-        using var request = new HttpRequestMessage(HttpMethod.Post, _responsesEndpoint);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
-        request.Content = new StringContent(JsonSerializer.Serialize(payload, JsonOptions()), Encoding.UTF8, "application/json");
+        var payload = BuildRequestPayload(userQuestion, queryResult);
+        using var request = new HttpRequestMessage(HttpMethod.Post, _providerOptions.RequestUri);
+        _providerOptions.ApplyAuthentication(request);
+        request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
         try
         {
@@ -94,6 +69,52 @@ public sealed class ResultExplanationService
         };
 
         return $"User question:\n{userQuestion}\n\nQueryResult JSON:\n{JsonSerializer.Serialize(safeResult, JsonOptions())}";
+    }
+
+    public string BuildRequestPayload(string userQuestion, QueryResult queryResult)
+    {
+        var userPrompt = BuildUserPrompt(userQuestion, queryResult);
+        if (_providerOptions.Provider == OpenAiProvider.AzureChatCompletions)
+        {
+            var azurePayload = new
+            {
+                messages = new object[]
+                {
+                    new { role = "system", content = _systemPrompt },
+                    new { role = "user", content = userPrompt }
+                },
+                max_completion_tokens = 4096
+            };
+
+            return JsonSerializer.Serialize(azurePayload, JsonOptions());
+        }
+
+        var payload = new
+        {
+            model = _providerOptions.ModelOrDeployment,
+            input = new object[]
+            {
+                new
+                {
+                    role = "system",
+                    content = new object[] { new { type = "input_text", text = _systemPrompt } }
+                },
+                new
+                {
+                    role = "user",
+                    content = new object[]
+                    {
+                        new
+                        {
+                            type = "input_text",
+                            text = userPrompt
+                        }
+                    }
+                }
+            }
+        };
+
+        return JsonSerializer.Serialize(payload, JsonOptions());
     }
 
     private static string CreateLocalExplanation(QueryResult queryResult)
@@ -137,6 +158,18 @@ public sealed class ResultExplanationService
                     {
                         return text.GetString() ?? string.Empty;
                     }
+                }
+            }
+        }
+
+        if (document.RootElement.TryGetProperty("choices", out var choices))
+        {
+            foreach (var choice in choices.EnumerateArray())
+            {
+                if (choice.TryGetProperty("message", out var message)
+                    && message.TryGetProperty("content", out var content))
+                {
+                    return content.GetString() ?? string.Empty;
                 }
             }
         }
