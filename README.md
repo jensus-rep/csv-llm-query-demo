@@ -24,16 +24,20 @@ Prerequisites:
 
 - .NET 8 SDK
 
-Optional OpenAI configuration:
+OpenAI configuration:
 
 ```powershell
-$env:OPENAI_API_KEY="your-api-key"
-$env:OPENAI_MODEL="gpt-5.2"
+Copy-Item .env.example .env
 ```
 
-Without `OPENAI_API_KEY`, the app uses a clearly marked local fallback for the included demo questions.
+Then edit `.env`:
 
-Copy `src/CsvAiQueryDemo/appsettings.example.json` if you want to configure a model name locally. Do not commit local settings with secrets.
+```env
+OPENAI_API_KEY=your-api-key
+OPENAI_MODEL=gpt-5.4
+```
+
+Without `OPENAI_API_KEY`, the app uses a clearly marked local fallback for the included demo questions. `.env` is ignored by Git; `.env.example` is safe to commit.
 
 ## Run
 

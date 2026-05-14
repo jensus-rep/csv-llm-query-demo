@@ -91,7 +91,7 @@
 - `QueryIntentService.BuildUserPrompt` includes only DatasetProfile JSON, the user question and the allowed QueryIntent schema.
 - Implemented local fallback intents for the demo questions when `OPENAI_API_KEY` is missing.
 - Implemented `ResultExplanationService` with optional OpenAI use and local fallback explanation.
-- Added `appsettings.example.json` and removed committed local `appsettings.json` files.
+- Added `.env.example`, removed `appsettings.example.json`, and kept local `.env` ignored.
 - Added `output/query-intent.json` as an example output.
 
 ### Test Evidence

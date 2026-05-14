@@ -1,6 +1,5 @@
 using CsvAiQueryDemo.Models;
 using CsvAiQueryDemo.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace CsvAiQueryDemo.Tests;
 
@@ -82,11 +81,7 @@ public sealed class QueryIntentServiceTests
         var promptPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.txt");
         File.WriteAllText(promptPath, "Return JSON only.");
 
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["OpenAI:Model"] = "test-model" })
-            .Build();
-
-        return new QueryIntentService(new HttpClient(), promptPath, configuration);
+        return new QueryIntentService(new HttpClient(), promptPath);
     }
 
     private static DatasetProfile CreateMinimalProfile()

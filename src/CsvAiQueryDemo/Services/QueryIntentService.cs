@@ -13,14 +13,12 @@ public sealed class QueryIntentService
     private readonly string? _apiKey;
     private readonly string _model;
 
-    public QueryIntentService(HttpClient httpClient, string promptPath, IConfiguration configuration)
+    public QueryIntentService(HttpClient httpClient, string promptPath)
     {
         _httpClient = httpClient;
         _systemPrompt = File.ReadAllText(promptPath);
         _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-        _model = Environment.GetEnvironmentVariable("OPENAI_MODEL")
-            ?? configuration["OpenAI:Model"]
-            ?? DefaultModel;
+        _model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? DefaultModel;
     }
 
     public async Task<QueryIntentGeneration> CreateIntentAsync(

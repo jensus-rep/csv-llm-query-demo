@@ -16,7 +16,9 @@ var dataPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, ".
 var outputPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", "output"));
 var promptPath = Path.Combine(app.Environment.ContentRootPath, "Prompts", "query-intent-system-prompt.txt");
 var explanationPromptPath = Path.Combine(app.Environment.ContentRootPath, "Prompts", "result-explanation-system-prompt.txt");
+var envPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", ".env"));
 Directory.CreateDirectory(outputPath);
+EnvFileLoader.Load(envPath);
 
 var csvLoader = new CsvLoader();
 var rows = csvLoader.Load(dataPath, ';');
@@ -28,8 +30,8 @@ File.WriteAllText(
     JsonSerializer.Serialize(datasetProfile, jsonOptions));
 
 var queryEngine = new QueryEngine(rows);
-var queryIntentService = new QueryIntentService(new HttpClient(), promptPath, app.Configuration);
-var resultExplanationService = new ResultExplanationService(new HttpClient(), explanationPromptPath, app.Configuration);
+var queryIntentService = new QueryIntentService(new HttpClient(), promptPath);
+var resultExplanationService = new ResultExplanationService(new HttpClient(), explanationPromptPath);
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

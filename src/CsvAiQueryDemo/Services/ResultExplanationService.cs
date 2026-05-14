@@ -13,14 +13,12 @@ public sealed class ResultExplanationService
     private readonly string? _apiKey;
     private readonly string _model;
 
-    public ResultExplanationService(HttpClient httpClient, string promptPath, IConfiguration configuration)
+    public ResultExplanationService(HttpClient httpClient, string promptPath)
     {
         _httpClient = httpClient;
         _systemPrompt = File.ReadAllText(promptPath);
         _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-        _model = Environment.GetEnvironmentVariable("OPENAI_MODEL")
-            ?? configuration["OpenAI:Model"]
-            ?? DefaultModel;
+        _model = Environment.GetEnvironmentVariable("OPENAI_MODEL") ?? DefaultModel;
     }
 
     public async Task<string> ExplainAsync(string userQuestion, QueryResult queryResult, CancellationToken cancellationToken = default)

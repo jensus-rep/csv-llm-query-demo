@@ -5,6 +5,7 @@
 
 # dotenv files
 .env
+**/.env
 
 # Local settings and secrets
 src/CsvAiQueryDemo/appsettings.json
