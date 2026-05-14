@@ -258,6 +258,17 @@ summary {
     font-weight: 650;
 }
 
+h3 {
+    margin: 14px 0 8px;
+    font-size: 14px;
+}
+
+.prompt-meta {
+    margin: 10px 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
 pre {
     white-space: pre-wrap;
     overflow-wrap: anywhere;

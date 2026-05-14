@@ -35,6 +35,7 @@ async function loadDatasetProfile() {
         const profile = await response.json();
         status.textContent = "ready";
         renderDataset(profile);
+        renderDatasetProfileJson(profile);
     } catch {
         status.textContent = "error";
     }
@@ -100,6 +101,8 @@ form.addEventListener("submit", async event => {
 
         pending.textContent = payload.answer;
         renderPipeline(payload.pipelineSteps ?? pipelineDefaults);
+        renderDatasetProfileJson(payload.datasetProfile);
+        renderPrompt(payload.queryIntentPrompt);
         document.querySelector("#query-intent-json").textContent = JSON.stringify(payload.queryIntent ?? {}, null, 2);
         document.querySelector("#query-result-json").textContent = JSON.stringify(payload.queryResult ?? {}, null, 2);
     } catch {
@@ -114,6 +117,31 @@ function addMessage(role, text) {
     messages.appendChild(element);
     messages.scrollTop = messages.scrollHeight;
     return element;
+}
+
+function renderDatasetProfileJson(profile) {
+    document.querySelector("#dataset-profile-json").textContent = JSON.stringify(profile ?? {}, null, 2);
+}
+
+function renderPrompt(prompt) {
+    document.querySelector("#query-prompt-provider").textContent = prompt?.provider
+        ? `Provider: ${prompt.provider}`
+        : "Noch keine Anfrage gesendet.";
+    document.querySelector("#query-system-prompt").textContent = prompt?.systemPrompt ?? "Noch keine Anfrage gesendet.";
+    document.querySelector("#query-user-prompt").textContent = prompt?.userPrompt ?? "Noch keine Anfrage gesendet.";
+    document.querySelector("#query-request-payload").textContent = formatJsonText(prompt?.requestPayload);
+}
+
+function formatJsonText(value) {
+    if (!value) {
+        return "Noch keine Anfrage gesendet.";
+    }
+
+    try {
+        return JSON.stringify(JSON.parse(value), null, 2);
+    } catch {
+        return value;
+    }
 }
 
 function renderPipeline(steps) {

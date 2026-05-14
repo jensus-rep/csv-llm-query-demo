@@ -4,4 +4,6 @@ public sealed record ChatResponse(
     string Answer,
     QueryIntent? QueryIntent,
     QueryResult QueryResult,
-    IReadOnlyList<PipelineStep> PipelineSteps);
+    IReadOnlyList<PipelineStep> PipelineSteps,
+    DatasetProfile DatasetProfile,
+    ModelPromptInfo? QueryIntentPrompt);

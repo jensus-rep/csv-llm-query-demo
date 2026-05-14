@@ -48,6 +48,7 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
     try
     {
         PipelineSteps.MarkRunning(steps, "QueryIntent durch LLM erzeugt", "Creating a structured query intent.");
+        var promptInfo = queryIntentService.BuildPromptInfo(request.Message, datasetProfile);
         var generation = await queryIntentService.CreateIntentAsync(request.Message, datasetProfile, cancellationToken);
         QueryIntentService.SaveIntent(generation.Intent, Path.Combine(outputPath, "query-intent.json"));
         PipelineSteps.MarkSuccess(steps, "QueryIntent durch LLM erzeugt", generation.Message);
@@ -64,10 +65,11 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
         }
 
         PipelineSteps.MarkSuccess(steps, "Ergebnis zurückgegeben", "The deterministic query result was returned to the frontend.");
-        return Results.Ok(new ChatResponse(answer, generation.Intent, queryResult, steps));
+        return Results.Ok(new ChatResponse(answer, generation.Intent, queryResult, steps, datasetProfile, promptInfo));
     }
     catch (Exception ex)
     {
+        var promptInfo = queryIntentService.BuildPromptInfo(request.Message, datasetProfile);
         PipelineSteps.MarkError(steps, "QueryIntent durch LLM erzeugt", ex.Message);
         var errorResult = new QueryResult
         {
@@ -79,7 +81,7 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
             Source = "CsvAiQueryDemo"
         };
 
-        return Results.BadRequest(new ChatResponse(ex.Message, null, errorResult, steps));
+        return Results.BadRequest(new ChatResponse(ex.Message, null, errorResult, steps, datasetProfile, promptInfo));
     }
 });
 
