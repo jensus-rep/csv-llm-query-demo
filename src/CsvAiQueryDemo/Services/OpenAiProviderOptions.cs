@@ -23,6 +23,8 @@ internal sealed class OpenAiProviderOptions
     {
         var providerName = FirstEnvironmentValue("OPENAI_PROVIDER", "AI_PROVIDER");
         var azureEndpoint = FirstEnvironmentValue("AZURE_OPENAI_ENDPOINT");
+        // Azure is selected explicitly by provider name or implicitly when an
+        // Azure endpoint is configured.
         var provider = IsAzureProvider(providerName)
             || !string.IsNullOrWhiteSpace(azureEndpoint)
                 ? OpenAiProvider.AzureChatCompletions

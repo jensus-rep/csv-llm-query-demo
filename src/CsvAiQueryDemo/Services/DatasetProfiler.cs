@@ -4,6 +4,10 @@ namespace CsvAiQueryDemo.Services;
 
 public static class DatasetProfiler
 {
+    /// <summary>
+    /// Creates the small, non-row-level dataset summary that can safely be sent
+    /// to the LLM for query interpretation.
+    /// </summary>
     public static DatasetProfile CreateProfile(
         string datasetId,
         string fileName,
@@ -45,6 +49,8 @@ public static class DatasetProfiler
             .Take(5)
             .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
 
+        // Examples and top values give the model enough vocabulary to map natural
+        // language to columns without exposing the complete CSV.
         return new ColumnProfile
         {
             Name = column,

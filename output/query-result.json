@@ -1,8 +1,249 @@
 {
-  "Operation": "count",
+  "Operation": "filter",
   "Success": true,
-  "Result": 26,
-  "Rows": [],
-  "Message": "Counted 26 matching rows.",
+  "Result": 40,
+  "Rows": [
+    {
+      "Rufnummer": "\u002B49 667 9845776",
+      "Vorname": "Werner",
+      "Nachname": "M\u00FCller",
+      "Mail": "werner.m\u00FCller88@testMail.org"
+    },
+    {
+      "Rufnummer": "\u002B49 576 4867372",
+      "Vorname": "Ursula",
+      "Nachname": "M\u00FCller",
+      "Mail": "ursula.m\u00FCller90@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 945 6346119",
+      "Vorname": "Erik",
+      "Nachname": "M\u00FCller",
+      "Mail": "erik.m\u00FCller168@testMail.org"
+    },
+    {
+      "Rufnummer": "\u002B49 458 5726193",
+      "Vorname": "Paul",
+      "Nachname": "M\u00FCller",
+      "Mail": "paul.m\u00FCller177@example.com"
+    },
+    {
+      "Rufnummer": "\u002B49 110 5779580",
+      "Vorname": "Ursula",
+      "Nachname": "M\u00FCller",
+      "Mail": "ursula.m\u00FCller178@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 467 8387531",
+      "Vorname": "Dieter",
+      "Nachname": "M\u00FCller",
+      "Mail": "dieter.m\u00FCller185@example.com"
+    },
+    {
+      "Rufnummer": "\u002B49 857 3188358",
+      "Vorname": "Klaus",
+      "Nachname": "M\u00FCller",
+      "Mail": "klaus.m\u00FCller187@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 585 2038692",
+      "Vorname": "Hans",
+      "Nachname": "M\u00FCller",
+      "Mail": "hans.m\u00FCller229@probe.net"
+    },
+    {
+      "Rufnummer": "\u002B49 378 5655656",
+      "Vorname": "David",
+      "Nachname": "M\u00FCller",
+      "Mail": "david.m\u00FCller413@probe.net"
+    },
+    {
+      "Rufnummer": "\u002B49 220 4073523",
+      "Vorname": "Max",
+      "Nachname": "M\u00FCller",
+      "Mail": "max.m\u00FCller416@testMail.org"
+    },
+    {
+      "Rufnummer": "\u002B49 484 3636529",
+      "Vorname": "Paul",
+      "Nachname": "M\u00FCller",
+      "Mail": "paul.m\u00FCller457@example.com"
+    },
+    {
+      "Rufnummer": "\u002B49 132 1747442",
+      "Vorname": "Monika",
+      "Nachname": "M\u00FCller",
+      "Mail": "monika.m\u00FCller525@probe.net"
+    },
+    {
+      "Rufnummer": "\u002B49 864 1229871",
+      "Vorname": "David",
+      "Nachname": "M\u00FCller",
+      "Mail": "david.m\u00FCller608@testMail.org"
+    },
+    {
+      "Rufnummer": "\u002B49 733 7712653",
+      "Vorname": "Dieter",
+      "Nachname": "M\u00FCller",
+      "Mail": "dieter.m\u00FCller694@fakeMail.de"
+    },
+    {
+      "Rufnummer": "\u002B49 639 2315748",
+      "Vorname": "Felix",
+      "Nachname": "M\u00FCller",
+      "Mail": "felix.m\u00FCller722@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 859 3105308",
+      "Vorname": "Sarah",
+      "Nachname": "M\u00FCller",
+      "Mail": "sarah.m\u00FCller782@fakeMail.de"
+    },
+    {
+      "Rufnummer": "\u002B49 228 2169897",
+      "Vorname": "Finn",
+      "Nachname": "M\u00FCller",
+      "Mail": "finn.m\u00FCller860@muster.de"
+    },
+    {
+      "Rufnummer": "\u002B49 499 7902966",
+      "Vorname": "Markus",
+      "Nachname": "M\u00FCller",
+      "Mail": "markus.m\u00FCller901@probe.net"
+    },
+    {
+      "Rufnummer": "\u002B49 192 1889971",
+      "Vorname": "Markus",
+      "Nachname": "M\u00FCller",
+      "Mail": "markus.m\u00FCller914@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 153 4949533",
+      "Vorname": "Ingrid",
+      "Nachname": "M\u00FCller",
+      "Mail": "ingrid.m\u00FCller1020@muster.de"
+    },
+    {
+      "Rufnummer": "\u002B49 640 5109381",
+      "Vorname": "Monika",
+      "Nachname": "M\u00FCller",
+      "Mail": "monika.m\u00FCller1026@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 493 9542239",
+      "Vorname": "Paul",
+      "Nachname": "M\u00FCller",
+      "Mail": "paul.m\u00FCller1110@fakeMail.de"
+    },
+    {
+      "Rufnummer": "\u002B49 279 4397990",
+      "Vorname": "Renate",
+      "Nachname": "M\u00FCller",
+      "Mail": "renate.m\u00FCller1125@probe.net"
+    },
+    {
+      "Rufnummer": "\u002B49 714 2605011",
+      "Vorname": "Paul",
+      "Nachname": "M\u00FCller",
+      "Mail": "paul.m\u00FCller1225@example.com"
+    },
+    {
+      "Rufnummer": "\u002B49 394 3352776",
+      "Vorname": "Stefan",
+      "Nachname": "M\u00FCller",
+      "Mail": "stefan.m\u00FCller1233@example.com"
+    },
+    {
+      "Rufnummer": "\u002B49 189 7014019",
+      "Vorname": "Thomas",
+      "Nachname": "M\u00FCller",
+      "Mail": "thomas.m\u00FCller1250@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 284 9935487",
+      "Vorname": "Philipp",
+      "Nachname": "M\u00FCller",
+      "Mail": "philipp.m\u00FCller1372@muster.de"
+    },
+    {
+      "Rufnummer": "\u002B49 628 4033289",
+      "Vorname": "Klaus",
+      "Nachname": "M\u00FCller",
+      "Mail": "klaus.m\u00FCller1375@demoData.de"
+    },
+    {
+      "Rufnummer": "\u002B49 898 1372609",
+      "Vorname": "Julia",
+      "Nachname": "M\u00FCller",
+      "Mail": "julia.m\u00FCller1386@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 698 1335593",
+      "Vorname": "Klaus",
+      "Nachname": "M\u00FCller",
+      "Mail": "klaus.m\u00FCller1592@testMail.org"
+    },
+    {
+      "Rufnummer": "\u002B49 379 1325472",
+      "Vorname": "Sabine",
+      "Nachname": "M\u00FCller",
+      "Mail": "sabine.m\u00FCller1626@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 882 5435520",
+      "Vorname": "Helga",
+      "Nachname": "M\u00FCller",
+      "Mail": "helga.m\u00FCller1650@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 590 4485189",
+      "Vorname": "Markus",
+      "Nachname": "M\u00FCller",
+      "Mail": "markus.m\u00FCller1674@demo.de"
+    },
+    {
+      "Rufnummer": "\u002B49 527 6119562",
+      "Vorname": "Anja",
+      "Nachname": "M\u00FCller",
+      "Mail": "anja.m\u00FCller1707@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 866 4091306",
+      "Vorname": "Jonas",
+      "Nachname": "M\u00FCller",
+      "Mail": "jonas.m\u00FCller1723@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 879 8956771",
+      "Vorname": "Paul",
+      "Nachname": "M\u00FCller",
+      "Mail": "paul.m\u00FCller1859@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 243 5747806",
+      "Vorname": "Michael",
+      "Nachname": "M\u00FCller",
+      "Mail": "michael.m\u00FCller1883@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 654 7333660",
+      "Vorname": "Mia",
+      "Nachname": "M\u00FCller",
+      "Mail": "mia.m\u00FCller1939@test.org"
+    },
+    {
+      "Rufnummer": "\u002B49 921 4750132",
+      "Vorname": "Thomas",
+      "Nachname": "M\u00FCller",
+      "Mail": "thomas.m\u00FCller1964@muster.de"
+    },
+    {
+      "Rufnummer": "\u002B49 127 8218890",
+      "Vorname": "Lea",
+      "Nachname": "M\u00FCller",
+      "Mail": "lea.m\u00FCller2000@testMail.org"
+    }
+  ],
+  "Message": "Returned 40 matching rows.",
   "Source": "CSharpQueryEngine"
 }

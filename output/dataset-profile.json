@@ -48,18 +48,18 @@
       "InferredType": "string",
       "EmptyCount": 0,
       "NonEmptyCount": 2000,
-      "UniqueCount": 49,
+      "UniqueCount": 50,
       "ExampleValues": [
         "Koch",
         "Fischer",
         "Schubert"
       ],
       "TopValues": {
-        "M\uFFFDller": 89,
         "Weber": 58,
         "Hahn": 52,
         "Schubert": 51,
-        "Zimmermann": 51
+        "Zimmermann": 51,
+        "Lange": 50
       }
     },
     {
@@ -83,5 +83,5 @@
     }
   ],
   "DataRef": "local-memory:demodaten.csv",
-  "CreatedAtUtc": "2026-05-14T15:06:09.3927047+00:00"
+  "CreatedAtUtc": "2026-05-14T22:53:59.5311664+00:00"
 }

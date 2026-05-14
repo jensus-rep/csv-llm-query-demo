@@ -1,8 +1,8 @@
 {
-  "Operation": "count",
-  "Column": "Vorname",
+  "Operation": "filter",
+  "Column": "Nachname",
   "Operator": "equals",
-  "Value": "Max",
+  "Value": "M\u00FCller",
   "GroupBy": null,
-  "Limit": null
+  "Limit": 50
 }

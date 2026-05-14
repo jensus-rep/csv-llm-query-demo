@@ -33,6 +33,11 @@ public sealed class QueryEngine
             : new HashSet<string>(rows[0].Keys, StringComparer.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Executes only the whitelisted operations from QueryIntent and returns a
+    /// deterministic result. Unsupported intents are reported as failed results
+    /// instead of being interpreted dynamically.
+    /// </summary>
     public QueryResult Execute(QueryIntent intent)
     {
         if (!SupportedOperations.Contains(intent.Operation))

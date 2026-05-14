@@ -1,4 +1,4 @@
-# Best Practice Explanation
+# Why The LLM Is Not The Query Engine
 
 An LLM should not be used as a database or calculator. Counting, filtering, grouping and aggregation are deterministic tasks. They belong in code where behavior is repeatable, testable and auditable.
 
@@ -45,3 +45,12 @@ That split keeps the system easier to test:
 - Unit tests can verify every supported query operation.
 - API smoke tests can verify the end-to-end pipeline.
 - Generated JSON files in `output/` make the intermediate state inspectable.
+
+## Practical Review Checklist
+
+When extending this project, keep these checks intact:
+
+- New operations should be added to `QueryIntentService` schema and `QueryEngine` together.
+- Every operation needs deterministic tests in `tests/CsvAiQueryDemo.Tests`.
+- Prompt-building tests should keep proving that full CSV rows are not sent to the LLM.
+- Result explanation should continue to use only scalar result data and row counts.

@@ -4,6 +4,9 @@ namespace CsvAiQueryDemo.Services;
 
 public sealed class CsvLoader
 {
+    /// <summary>
+    /// Loads a UTF-8 CSV file into case-insensitive row dictionaries keyed by header name.
+    /// </summary>
     public IReadOnlyList<Dictionary<string, string>> Load(string filePath, char delimiter = ';')
     {
         if (!File.Exists(filePath))
@@ -53,6 +56,7 @@ public sealed class CsvLoader
             var character = line[i];
             if (character == '"')
             {
+                // RFC-style escaped quote inside a quoted value: "" becomes ".
                 if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
                 {
                     current.Append('"');

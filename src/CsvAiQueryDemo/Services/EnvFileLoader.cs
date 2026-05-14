@@ -2,6 +2,10 @@ namespace CsvAiQueryDemo.Services;
 
 public static class EnvFileLoader
 {
+    /// <summary>
+    /// Loads key-value pairs from .env without overriding variables already set
+    /// by the shell, CI, or hosting environment.
+    /// </summary>
     public static void Load(string filePath)
     {
         if (!File.Exists(filePath))

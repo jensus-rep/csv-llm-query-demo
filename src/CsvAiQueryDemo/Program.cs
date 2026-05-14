@@ -12,6 +12,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 var app = builder.Build();
 
+// Resolve all project-local paths from the web project directory. This keeps the
+// demo runnable from Visual Studio, `dotnet run --project`, and the repository root.
 var dataPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", "data", "demodaten.csv"));
 var outputPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", "output"));
 var promptPath = Path.Combine(app.Environment.ContentRootPath, "Prompts", "query-intent-system-prompt.txt");
@@ -24,6 +26,8 @@ var csvLoader = new CsvLoader();
 var rows = csvLoader.Load(dataPath, ';');
 var datasetProfile = DatasetProfiler.CreateProfile("demo-contacts", Path.GetFileName(dataPath), rows, ';');
 
+// The profile is the compact metadata view sent to the LLM. The full row set
+// stays in memory and is used only by QueryEngine.
 var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(
     Path.Combine(outputPath, "dataset-profile.json"),
@@ -53,6 +57,8 @@ app.MapPost("/api/chat", async (ChatRequest request, CancellationToken cancellat
         QueryIntentService.SaveIntent(generation.Intent, Path.Combine(outputPath, "query-intent.json"));
         PipelineSteps.MarkSuccess(steps, "QueryIntent durch LLM erzeugt", generation.Message);
 
+        // Query execution is deliberately local and deterministic; the LLM only
+        // decides which supported operation should run.
         PipelineSteps.MarkRunning(steps, "QueryEngine in C# ausgeführt", "Executing the query locally in C#.");
         var queryResult = queryEngine.Execute(generation.Intent);
         QueryEngine.SaveResult(queryResult, Path.Combine(outputPath, "query-result.json"));

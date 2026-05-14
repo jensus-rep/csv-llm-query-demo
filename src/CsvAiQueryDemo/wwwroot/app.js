@@ -42,6 +42,8 @@ async function loadDatasetProfile() {
     }
 }
 
+// Render all dynamic text through escapeHtml because the values originate from
+// CSV data, model output, or API responses.
 function renderDataset(profile) {
     document.querySelector("#dataset-summary").innerHTML = `
         <div class="metric"><span>Datei</span><strong>${escapeHtml(profile.fileName)}</strong></div>

@@ -58,6 +58,8 @@ public sealed class ResultExplanationService
 
     public string BuildUserPrompt(string userQuestion, QueryResult queryResult)
     {
+        // Returned rows can contain sensitive data. The explanation model receives
+        // only a scalar result and row count, never the row collection itself.
         var safeResult = new
         {
             queryResult.Operation,

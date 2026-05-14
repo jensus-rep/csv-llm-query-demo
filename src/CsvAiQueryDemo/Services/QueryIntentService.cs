@@ -45,6 +45,8 @@ public sealed class QueryIntentService
             throw new InvalidOperationException("Azure OpenAI endpoint is not configured. Set AZURE_OPENAI_ENDPOINT in .env.");
         }
 
+        // Only the DatasetProfile, user question, and schema are included in this
+        // request. The in-memory CSV rows are never passed to this service.
         var payload = BuildRequestPayload(userQuestion, datasetProfile);
         using var request = new HttpRequestMessage(HttpMethod.Post, _providerOptions.RequestUri);
         _providerOptions.ApplyAuthentication(request);
@@ -192,6 +194,8 @@ Allowed QueryIntent schema:
     {
         var normalized = userQuestion.ToLowerInvariant();
 
+        // The fallback is intentionally tiny and deterministic. It is for offline
+        // demo questions only and must be enabled explicitly via .env.
         if (normalized.Contains("unterschiedliche") && normalized.Contains("vornamen"))
         {
             return new QueryIntent { Operation = "distinct", Column = "Vorname" };
