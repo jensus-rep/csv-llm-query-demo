@@ -55,7 +55,7 @@ Then edit `.env`. The file is ignored by Git.
 ### OpenAI Responses API
 
 ```env
-OPENAI_USE_PROXY=false
+OPENAI_USE_PROXY=true
 OPENAI_ENABLE_FALLBACK=false
 
 OPENAI_PROVIDER=openai
@@ -69,7 +69,7 @@ OPENAI_RESPONSES_ENDPOINT=https://api.openai.com/v1/responses
 ### Azure OpenAI Chat Completions
 
 ```env
-OPENAI_USE_PROXY=false
+OPENAI_USE_PROXY=true
 OPENAI_ENABLE_FALLBACK=false
 
 OPENAI_PROVIDER=azure
@@ -81,6 +81,8 @@ AZURE_OPENAI_API_VERSION=2024-12-01-preview
 ```
 
 For Azure, `AZURE_OPENAI_DEPLOYMENT` wins. If it is missing, the app falls back to `OPENAI_MODEL` and then `AI_MODEL`.
+
+`OPENAI_USE_PROXY` defaults to `true`, so the app uses the system proxy by default. Set it to `false` only when you need to bypass the system proxy.
 
 Set `OPENAI_ENABLE_FALLBACK=true` only when you explicitly want the local demo fallback for supported example questions. Keep it `false` when validating the real OpenAI or Azure OpenAI integration.
 

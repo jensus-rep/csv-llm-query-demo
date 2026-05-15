@@ -4,10 +4,8 @@ public static class OpenAiHttpClientFactory
 {
     public static HttpClient Create()
     {
-        var useProxy = string.Equals(
-            Environment.GetEnvironmentVariable("OPENAI_USE_PROXY"),
-            "true",
-            StringComparison.OrdinalIgnoreCase);
+        var proxySetting = Environment.GetEnvironmentVariable("OPENAI_USE_PROXY");
+        var useProxy = !string.Equals(proxySetting, "false", StringComparison.OrdinalIgnoreCase);
 
         return new HttpClient(new SocketsHttpHandler
         {

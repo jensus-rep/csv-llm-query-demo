@@ -204,6 +204,7 @@ body {
     padding: 10px 12px;
     border-radius: 8px;
     line-height: 1.45;
+    white-space: pre-wrap;
 }
 
 .message.user {
@@ -212,6 +213,31 @@ body {
 }
 
 .message.assistant { background: #eef1f5; }
+
+.answer-table-wrap {
+    max-width: 100%;
+    overflow: auto;
+}
+
+.answer-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    white-space: normal;
+}
+
+.answer-table th,
+.answer-table td {
+    border: 1px solid var(--line);
+    padding: 7px 9px;
+    text-align: left;
+}
+
+.answer-table th {
+    background: #e6f2ef;
+    color: var(--accent-strong);
+    font-weight: 650;
+}
 
 .examples {
     display: flex;

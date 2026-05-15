@@ -102,7 +102,7 @@ form.addEventListener("submit", async event => {
         });
         const payload = await response.json();
 
-        pending.textContent = payload.answer;
+        renderAssistantAnswer(pending, payload.answer ?? "");
         renderPipeline(payload.pipelineSteps ?? pipelineDefaults);
         renderDatasetProfileJson(payload.datasetProfile);
         renderPrompt(payload.queryIntentPrompt);
@@ -121,6 +121,71 @@ function addMessage(role, text) {
     messages.appendChild(element);
     messages.scrollTop = messages.scrollHeight;
     return element;
+}
+
+function renderAssistantAnswer(element, text) {
+    const table = parseMarkdownTable(text);
+    if (!table) {
+        element.textContent = text;
+        return;
+    }
+
+    element.innerHTML = `
+        ${table.before ? `<p>${escapeHtml(table.before)}</p>` : ""}
+        <div class="answer-table-wrap">
+            <table class="answer-table">
+                <thead>
+                    <tr>${table.headers.map(header => `<th>${escapeHtml(header)}</th>`).join("")}</tr>
+                </thead>
+                <tbody>
+                    ${table.rows.map(row => `
+                        <tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+        ${table.after ? `<p>${escapeHtml(table.after)}</p>` : ""}
+    `;
+}
+
+function parseMarkdownTable(text) {
+    const lines = text.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    const separatorIndex = lines.findIndex(line => /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line));
+    if (separatorIndex <= 0) {
+        return null;
+    }
+
+    const headers = splitTableRow(lines[separatorIndex - 1]);
+    const rows = [];
+    for (let index = separatorIndex + 1; index < lines.length; index += 1) {
+        if (!lines[index].includes("|")) {
+            break;
+        }
+
+        const cells = splitTableRow(lines[index]);
+        if (cells.length === headers.length) {
+            rows.push(cells);
+        }
+    }
+
+    if (headers.length === 0 || rows.length === 0) {
+        return null;
+    }
+
+    return {
+        before: lines.slice(0, separatorIndex - 1).join("\n"),
+        headers,
+        rows,
+        after: lines.slice(separatorIndex + 1 + rows.length).join("\n")
+    };
+}
+
+function splitTableRow(line) {
+    return line
+        .replace(/^\|/, "")
+        .replace(/\|$/, "")
+        .split("|")
+        .map(cell => cell.trim());
 }
 
 function renderDatasetProfileJson(profile) {

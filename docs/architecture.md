@@ -57,7 +57,7 @@ Supported aliases:
 - `AI_RESPONSES_ENDPOINT` for `OPENAI_RESPONSES_ENDPOINT`
 - `AI_API_VERSION` for `OPENAI_API_VERSION`
 
-`OPENAI_USE_PROXY=true` enables proxy use on the underlying `SocketsHttpHandler`.
+`OPENAI_USE_PROXY` defaults to `true`, so the underlying `SocketsHttpHandler` uses the system proxy by default. Set `OPENAI_USE_PROXY=false` to bypass the system proxy.
 
 ## QueryIntent Contract
 

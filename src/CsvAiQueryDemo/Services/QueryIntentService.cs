@@ -77,12 +77,13 @@ public sealed class QueryIntentService
         }
         catch (HttpRequestException ex)
         {
+            var errorMessage = BuildExceptionMessage(ex);
             if (!_fallbackEnabled)
             {
-                throw new InvalidOperationException($"LLM connection failed for endpoint {_providerOptions.RequestUri}: {ex.Message}", ex);
+                throw new InvalidOperationException($"LLM connection failed for endpoint {_providerOptions.RequestUri}: {errorMessage}", ex);
             }
 
-            return CreateFallbackGeneration(userQuestion, $"LLM connection failed: {ex.Message}");
+            return CreateFallbackGeneration(userQuestion, $"LLM connection failed: {errorMessage}");
         }
         catch (TaskCanceledException ex)
         {
@@ -302,6 +303,20 @@ Allowed QueryIntent schema:
         }
 
         return null;
+    }
+
+    private static string BuildExceptionMessage(Exception exception)
+    {
+        var messages = new List<string>();
+        for (var current = exception; current is not null; current = current.InnerException)
+        {
+            if (!string.IsNullOrWhiteSpace(current.Message))
+            {
+                messages.Add(current.Message);
+            }
+        }
+
+        return string.Join(" Inner exception: ", messages.Distinct());
     }
 
     private static JsonSerializerOptions JsonOptions()
